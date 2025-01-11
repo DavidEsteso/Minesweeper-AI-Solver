@@ -1,6 +1,6 @@
 name:                mines
 version:             0.1.0.0
-github:              "DavidEsteso/Minesweeper"
+github:              "DavidEsteso/Minesweeper-AI-Solver"
 license:             MIT
 author:              "David Esteso"
 maintainer:          "example@example.com"
