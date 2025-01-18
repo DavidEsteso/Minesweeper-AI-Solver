@@ -2,9 +2,6 @@ FROM haskell:9.4
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    libghc-threepenny-gui-dev \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
