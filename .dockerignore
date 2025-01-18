@@ -1,0 +1,6 @@
+dist
+dist-*
+.git
+.gitignore
+*.o
+*.hi
