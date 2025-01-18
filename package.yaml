@@ -24,6 +24,7 @@ dependencies:
 - threepenny-gui
 - containers
 - random
+- bytestring
 
 
 ghc-options:

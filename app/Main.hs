@@ -9,6 +9,9 @@ import Minesweeper
 import MinesweeperSolver
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
+import System.Environment (lookupEnv)
+import qualified Data.ByteString.Char8 as BS
+
 
 data DisplayMode = TimeMode | MovesMode
     deriving (Eq)
@@ -274,7 +277,14 @@ changeDifficultyButtonStyle =
     ]
 
 main :: IO ()
-main = startGUI defaultConfig { jsPort = Just 8023 } setupDifficultySelector
+main = do
+    maybePort <- lookupEnv "PORT"
+    let port = maybe 8023 read maybePort
+    
+    startGUI defaultConfig 
+        { jsPort = Just port
+        , jsAddr = Just (BS.pack "0.0.0.0")  -- Convertimos el String a ByteString
+        } setupDifficultySelector
 
 setupDifficultySelector :: Window -> UI ()
 setupDifficultySelector window = do
