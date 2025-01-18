@@ -1,4 +1,4 @@
-cabal-version: 2.2
+cabal-version: 1.12
 
 -- This file has been generated from package.yaml by hpack version 0.37.0.
 --
@@ -7,12 +7,12 @@ cabal-version: 2.2
 name:           mines
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/mines#readme>
-homepage:       https://github.com/githubuser/mines#readme
-bug-reports:    https://github.com/githubuser/mines/issues
-author:         Author name here
+homepage:       https://github.com/DavidEsteso/Minesweeper-AI-Solver#readme
+bug-reports:    https://github.com/DavidEsteso/Minesweeper-AI-Solver/issues
+author:         David Esteso
 maintainer:     example@example.com
-copyright:      2024 Author name here
-license:        BSD-3-Clause
+copyright:      2025 David Esteso
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/mines
+  location: https://github.com/DavidEsteso/Minesweeper-AI-Solver
 
 library
   exposed-modules:
@@ -30,8 +30,6 @@ library
       MinesweeperSolver
       PatternDebug
   other-modules:
-      Paths_mines
-  autogen-modules:
       Paths_mines
   hs-source-dirs:
       src
@@ -46,8 +44,6 @@ library
 executable mines-exe
   main-is: Main.hs
   other-modules:
-      Paths_mines
-  autogen-modules:
       Paths_mines
   hs-source-dirs:
       app
@@ -64,8 +60,6 @@ test-suite mines-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_mines
-  autogen-modules:
       Paths_mines
   hs-source-dirs:
       test

@@ -134,6 +134,10 @@ containerStyle = [ ("background-color", "#c0c0c0")
                 , ("padding", "10px")
                 , ("display", "inline-block")
                 , ("margin", "20px auto")
+                , ("position", "absolute")
+                , ("top", "50%")
+                , ("left", "50%")
+                , ("transform", "translate(-50%, -50%)")
                 ]
 
 
@@ -143,7 +147,6 @@ mineDisplayStyle = timeDisplayStyle ++
     , ("transition", "color 0.3s ease")
     ]
 
--- Colores de los números actualizados para coincidir exactamente
 getNumberColor :: Int -> String
 getNumberColor n = case n of
     1 -> "#0000ff" 
@@ -156,28 +159,168 @@ getNumberColor n = case n of
     8 -> "#808080"
     _ -> "#000000"
 
+difficultyButtonStyle :: [(String, String)]
+difficultyButtonStyle = 
+    [ ("width", "200px")
+    , ("height", "60px")
+    , ("margin", "10px")
+    , ("background-color", "#c0c0c0")
+    , ("border-top", "3px solid #ffffff")
+    , ("border-left", "3px solid #ffffff")
+    , ("border-right", "3px solid #7b7b7b")
+    , ("border-bottom", "3px solid #7b7b7b")
+    , ("font-size", "16px")
+    , ("cursor", "pointer")
+    , ("display", "block")
+    , ("text-align", "center")
+    , ("user-select", "none")
+    , ("-webkit-user-select", "none")
+    ]
+
+
+difficultyContainerStyle :: [(String, String)]
+difficultyContainerStyle = 
+    [ ("width", "100%")
+    , ("max-width", "500px")
+    , ("margin", "20px auto")
+    , ("text-align", "center")
+    , ("background-color", "#c0c0c0")
+    , ("border-top", "3px solid #ffffff")
+    , ("border-left", "3px solid #ffffff")
+    , ("border-right", "3px solid #7b7b7b")
+    , ("border-bottom", "3px solid #7b7b7b")
+    , ("padding", "20px")
+    , ("position", "absolute")
+    , ("top", "50%")
+    , ("left", "50%")
+    , ("transform", "translate(-50%, -50%)")
+    ,  ("display", "flex")
+      , ("flex-direction", "column")
+      , ("align-items", "center")
+      , ("justify-content", "center")
+      , ("margin", "0 auto")
+    ]
+
+titleStyle :: [(String, String)]
+titleStyle = 
+    [ ("font-family", "Arial, sans-serif")
+    , ("font-size", "32px")
+    , ("color", "#000000")
+    , ("margin", "0 0 20px 0")
+    , ("user-select", "none")
+    , ("-webkit-user-select", "none")
+    ]
+
+customContainerStyle :: [(String, String)]
+customContainerStyle = 
+    [ ("margin-top", "20px")
+    , ("padding", "15px")
+    , ("background-color", "#c0c0c0")
+    , ("border-top", "2px solid #ffffff")
+    , ("border-left", "2px solid #ffffff")
+    , ("border-right", "2px solid #7b7b7b")
+    , ("border-bottom", "2px solid #7b7b7b")
+    , ("padding", "20px")
+    , ("position", "absolute")
+    , ("top", "50%")
+    , ("left", "50%")
+    , ("transform", "translate(-50%, -50%)")
+    ]
+
+customInputStyle :: [(String, String)]
+customInputStyle = 
+    [ ("font-family", "Digital-7, Courier New, monospace")
+    , ("font-size", "20px")
+    , ("width", "80px")
+    , ("margin", "5px")
+    , ("text-align", "center")
+    , ("color", "#ff0000")
+    , ("background-color", "#000000")
+    , ("border-top", "2px solid #7b7b7b")
+    , ("border-left", "2px solid #7b7b7b")
+    , ("border-right", "2px solid #ffffff")
+    , ("border-bottom", "2px solid #ffffff")
+    , ("padding", "2px 4px")
+    ]
+
+labelStyle :: [(String, String)]
+labelStyle =
+    [ ("font-family", "Digital-7, Courier New, monospace")
+    , ("font-size", "20px")
+    , ("color", "#ff0000")
+    , ("margin", "0 5px")
+    , ("user-select", "none")
+    , ("-webkit-user-select", "none")
+    ]
+
+changeDifficultyButtonStyle :: [(String, String)]
+changeDifficultyButtonStyle = 
+    [ ("position", "fixed")
+    , ("top", "10px")
+    , ("left", "10px")
+    , ("width", "35px")
+    , ("height", "35px")
+    , ("background-color", "#c0c0c0")
+    , ("border-top", "2px solid #ffffff")
+    , ("border-left", "2px solid #ffffff")
+    , ("border-right", "2px solid #7b7b7b")
+    , ("border-bottom", "2px solid #7b7b7b")
+    , ("cursor", "pointer")
+    , ("font-size", "20px")
+    , ("padding", "0")
+    , ("text-align", "center")
+    , ("line-height", "35px")
+    , ("user-select", "none")
+    ]
+
 main :: IO ()
-main = do
-    args <- getArgs
-    difficulty <- case args of
-        [] -> return Easy  -- Default difficulty
-        [diffStr] -> case reads diffStr of
-            [(diff, "")] -> return diff
-            _ -> do
-                putStrLn "Invalid difficulty. Use: Easy, Medium, Hard, or Custom w h m"
-                exitFailure
-        [w, h, m] -> case (reads w, reads h, reads m) of
-            ([(width, "")], [(height, "")], [(mines, "")]) -> 
-                return $ Custom width height mines
-            _ -> do
-                putStrLn "Invalid custom dimensions. Use three numbers for width height mines"
-                exitFailure
-        _ -> do
-            putStrLn "Usage: stack run [difficulty] or stack run width height mines"
-            exitFailure
-            
-    let (width, height, mines) = difficultySettings difficulty
-    startGUI defaultConfig { jsPort = Just 8023 } (setup width height mines)
+main = startGUI defaultConfig { jsPort = Just 8023 } setupDifficultySelector
+
+setupDifficultySelector :: Window -> UI ()
+setupDifficultySelector window = do
+    void $ return window # set UI.title "Minesweeper - Select Difficulty"
+    body <- getBody window
+    
+    container <- UI.div # set UI.style difficultyContainerStyle
+    
+    title <- UI.h1 # set UI.text "Minesweeper" 
+                   # set UI.style titleStyle
+    
+    -- Simplified difficulty buttons
+    easyButton <- UI.button # set UI.text "Easy (8x8 - 10 mines)"
+                           # set UI.style difficultyButtonStyle
+    mediumButton <- UI.button # set UI.text "Medium (16x16 - 40 mines)"
+                             # set UI.style difficultyButtonStyle
+    hardButton <- UI.button # set UI.text "Hard (30x16 - 99 mines)"
+                           # set UI.style difficultyButtonStyle
+    
+    -- Click handlers
+    on UI.click easyButton $ const $ startGame window 8 8 10
+    on UI.click mediumButton $ const $ startGame window 16 16 40
+    on UI.click hardButton $ const $ startGame window 30 16 99
+    
+    -- Add everything to the container
+    void $ element container #+ [ element title
+                               , element easyButton
+                               , element mediumButton
+                               , element hardButton
+                               ]
+    
+    void $ element body #+ [element container]
+
+    void $ element body # set UI.style
+      [ ("background-color", "#a9a9a9")
+      , ("min-height", "100vh")
+      , ("margin", "0")
+      ]
+
+startGame :: Window -> Int -> Int -> Int -> UI ()
+startGame window width height mines = do
+    body <- getBody window
+    void $ element body # set UI.children []
+
+    
+    setup width height mines window
 
 setup :: Int -> Int -> Int -> Window -> UI ()
 setup width height mines window = do
@@ -195,15 +338,25 @@ setup width height mines window = do
     body <- getBody window
     
     container <- UI.div # set UI.style containerStyle
-    topPanel <- UI.div # set UI.style [("display", "flex"), ("justify-content", "space-between"), ("margin-bottom", "10px")]
+    topPanel <- UI.div # set UI.style [("display", "flex"), ("justify-content", "space-between"), ("align-items", "center"), ("margin-bottom", "10px")]
     
     mineDisplay <- UI.span 
         # set UI.text (formatNumber mines) 
         # set UI.style mineDisplayStyle
     
-    timeDisplay <- UI.span # set UI.text "000" # set UI.style (timeDisplayStyle ++ [("cursor", "pointer")])
+    buttonGroup <- UI.div # set UI.style [("display", "flex"), ("gap", "5px"), ("align-items", "center")]
+    
+    changeDifficultyBtn <- UI.button # set UI.text "⚙️" # set UI.style replayButtonStyle
     replayButton <- UI.button # set UI.text "🙂" # set UI.style replayButtonStyle
     autoPlayButton <- UI.button # set UI.text "🤖" # set UI.style replayButtonStyle
+    
+    timeDisplay <- UI.span # set UI.text "000" # set UI.style timeDisplayStyle
+    
+    on UI.click changeDifficultyBtn $ const $ do
+        runFunction $ ffi "window.location.reload();"
+
+    void $ element buttonGroup #+ [element changeDifficultyBtn, element replayButton, element autoPlayButton]
+    void $ element topPanel #+ [element mineDisplay, element buttonGroup, element timeDisplay]
 
     
     grid <- UI.table # set UI.style gridStyle
